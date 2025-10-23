@@ -1,4 +1,4 @@
-name: Python CI - Updated
+name: CI/CD Pipeline
 
 on:
   push:
@@ -28,5 +28,18 @@ jobs:
 
       - name: Run tests
         run: pytest -v
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Deploy to Railway
+        uses: railwayapp/railway-deploy@v1
+        with:
+          railway-token: ${{ secrets.RAILWAY_TOKEN }}
+          service: ${{ secrets.RAILWAY_SERVICE_ID }}
 
 

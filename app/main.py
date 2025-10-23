@@ -1,10 +1,27 @@
 from flask import Flask, request, jsonify
+import os
 
 app = Flask(__name__)
+
+# Production configuration
+if os.environ.get('FLASK_ENV') == 'production':
+    app.config['DEBUG'] = False
+else:
+    app.config['DEBUG'] = True
 
 @app.route('/')
 def home():
     return "Welcome to the Flask CI/CD Demo!"
+
+@app.route('/health')
+def health():
+    import os
+    port = os.environ.get('PORT', '5000')
+    return {
+        "status": "healthy", 
+        "service": "flask-ci-cd-demo",
+        "port": port
+    }, 200
 
 @app.route('/square', methods=['POST'])
 def square():
