@@ -4,6 +4,8 @@ services:
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app.main:app --bind 0.0.0.0:$PORT
+    healthCheckPath: /health
+    healthCheckTimeout: 30
     envVars:
       - key: FLASK_ENV
         value: production
