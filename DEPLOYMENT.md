@@ -1,58 +1,53 @@
 # 🚀 Deployment Guide
 
-This guide shows how to deploy your Flask CI/CD application using different platforms.
+This guide shows how to deploy your Flask CI/CD application using Render.
 
 ## 📋 Prerequisites
 
 - GitHub repository with CI/CD pipeline
-- Account on your chosen deployment platform
+- Render account (free tier available)
 
-## 🎯 Deployment Options
+## 🎯 Deployment with Render
 
-### Option 1: Railway (Recommended - Free)
-
-1. **Sign up at [Railway.app](https://railway.app)**
-2. **Connect your GitHub repository**
-3. **Get your Railway credentials:**
-   - Go to Railway Dashboard → Your Project → Settings
-   - Copy your `RAILWAY_TOKEN` and `RAILWAY_SERVICE_ID`
-
-4. **Add secrets to GitHub:**
-   - Go to your GitHub repo → Settings → Secrets and variables → Actions
-   - Add these secrets:
-     - `RAILWAY_TOKEN`: Your Railway token
-     - `RAILWAY_SERVICE_ID`: Your service ID
-
-5. **Deploy automatically:**
-   - Push to main branch
-   - GitHub Actions will run tests
-   - If tests pass, automatic deployment to Railway
-
-### Option 2: Heroku
-
-1. **Install Heroku CLI**
-2. **Create Heroku app:**
-   ```bash
-   heroku create your-app-name
-   ```
-
-3. **Update workflow for Heroku:**
-   ```yaml
-   - name: Deploy to Heroku
-     uses: akhileshns/heroku-deploy@v3.12.12
-     with:
-       heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-       heroku_app_name: "your-app-name"
-       heroku_email: "your-email@example.com"
-   ```
-
-### Option 3: Render
+### Option 1: Automatic Deployment via GitHub Actions (Recommended)
 
 1. **Sign up at [Render.com](https://render.com)**
-2. **Connect GitHub repository**
-3. **Configure build settings:**
-   - Build Command: `pip install -r requirements.txt`
-   - Start Command: `gunicorn app.main:app --bind 0.0.0.0:$PORT`
+2. **Create a new Web Service:**
+   - Connect your GitHub repository
+   - Choose "Web Service"
+   - Select your repository and branch (main)
+
+3. **Configure the service:**
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `gunicorn app.main:app --bind 0.0.0.0:$PORT`
+   - **Python Version:** 3.11.5
+
+4. **Get your Render credentials:**
+   - Go to Render Dashboard → Account Settings → API Keys
+   - Create a new API key
+   - Copy your service ID from the service settings
+
+5. **Add secrets to GitHub:**
+   - Go to your GitHub repo → Settings → Secrets and variables → Actions
+   - Add these secrets:
+     - `RENDER_API_KEY`: Your Render API key
+     - `RENDER_SERVICE_ID`: Your service ID
+
+6. **Deploy automatically:**
+   - Push to main branch
+   - GitHub Actions will run tests
+   - If tests pass, automatic deployment to Render
+
+### Option 2: Manual Deployment to Render
+
+1. **Go to [Render.com](https://render.com)**
+2. **Create new Web Service**
+3. **Connect your GitHub repository**
+4. **Configure settings:**
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `gunicorn app.main:app --bind 0.0.0.0:$PORT`
+   - **Python Version:** 3.11.5
+5. **Deploy manually**
 
 ## 🔧 Configuration Files
 
@@ -61,19 +56,19 @@ This guide shows how to deploy your Flask CI/CD application using different plat
 web: gunicorn app.main:app --bind 0.0.0.0:$PORT
 ```
 
-### railway.json
-```json
-{
-  "$schema": "https://railway.app/railway.schema.json",
-  "build": {
-    "builder": "NIXPACKS"
-  },
-  "deploy": {
-    "startCommand": "gunicorn app.main:app --bind 0.0.0.0:$PORT",
-    "healthcheckPath": "/health",
-    "healthcheckTimeout": 100
-  }
-}
+### render.yaml
+```yaml
+services:
+  - type: web
+    name: flask-ci-cd-demo
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app.main:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.11.5
 ```
 
 ## 🧪 Testing Your Deployment
