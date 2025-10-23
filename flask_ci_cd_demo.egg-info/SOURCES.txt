@@ -1,0 +1,10 @@
+setup.py
+app/__init__.py
+app/main.py
+flask_ci_cd_demo.egg-info/PKG-INFO
+flask_ci_cd_demo.egg-info/SOURCES.txt
+flask_ci_cd_demo.egg-info/dependency_links.txt
+flask_ci_cd_demo.egg-info/requires.txt
+flask_ci_cd_demo.egg-info/top_level.txt
+tests/__init__.py
+tests/test_main.py
